@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="sk">
+    <head>
+        <meta charset="UTF-8" />
+        <title>CookLab – Generátor receptov</title>
+        <meta
+            name="description"
+            content="CookLab – generátor receptov podľa surovín, ktoré máš doma."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body>
+        <div class="bg-decor"></div>
+
+        <div class="wrapper">
+            <!-- TOP NAV -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <!-- LOGO V TOPBARE -->
+                    <img
+                        src="img/logo-clovek.png"
+                        alt="CookLab logo"
+                        class="topbar-logo"
+                    />
+                    <span class="topbar-title">CookLab</span>
+                </div>
+                <nav class="topbar-nav">
+                    <button type="button" class="topbar-link" data-nav="search">
+                        Recepty
+                    </button>
+                    <button type="button" class="topbar-link" id="addRecipeNav">
+                        Pridať recept
+                    </button>
+                    <button
+                        type="button"
+                        class="topbar-link topbar-favs"
+                        id="favoritesNav"
+                    >
+                        <span class="heart-icon">♡</span>
+                        <span>Obľúbené</span>
+                        <span id="favCount" class="fav-count">0</span>
+                    </button>
+                    <button
+                        type="button"
+                        class="topbar-premium-btn"
+                        id="topPremiumBtn"
+                    >
+                        Premium
+                    </button>
+                </nav>
+            </header>
+
+            <!-- HERO + VYHĽADÁVANIE -->
+            <section class="hero" id="searchSection">
+                <!-- LOGO V HERO -->
+                <img
+                    src="img/imgcooklab-logo.png"
+                    alt="CookLab logo"
+                    class="topbar-logo"
+                    style="width: 200px; height: auto;"
+                />
+
+                <h1>Generátor Receptov</h1>
+
+                <div class="ingredients-selector">
+                    <p class="ingredients-label">Vyber ingrediencie, ktoré máš doma:</p>
+                    <div id="ingredientsGrid" class="ingredients-grid"></div>
+                    <button id="clearSelectionBtn" class="secondary-btn small">
+                        Vymazať výber
+                    </button>
+                </div>
+
+                <p class="hint">
+                    Klikni na ingrediencie a automaticky sa ti zobrazia recepty, ktoré ich obsahujú.
+                </p>
+
+                <div class="hero-badges">
+                    <span class="badge">Free verzia</span>
+                    <span class="badge badge-premium-mini"
+                        >Premium funkcie – aktivuj hore</span
+                    >
+                </div>
+            </section>
+
+            <main>
+                <!-- Výsledky vyhľadávania -->
+                <section id="searchResults" class="section results hidden">
+                    <div class="section-header">
+                        <h2>Výsledky hľadania</h2>
+                        <p class="section-subtitle">
+                            <span id="searchCountText"></span>
+                            · pre:
+                            <span id="searchQueryLabel" class="badge"></span>
+                        </p>
+                    </div>
+                    <div id="searchResultsList" class="card-grid"></div>
+                    <p id="searchEmptyMessage" class="empty-message hidden">
+                        Pre zadané suroviny sme nenašli žiadny recept. Skús iné
+                        suroviny alebo pridaj viac možností.
+                    </p>
+                </section>
+
+                <!-- Detail receptu -->
+                <section id="detailSection" class="section detail hidden">
+                    <div class="recipe-detail-card">
+                        <div class="recipe-image-wrap">
+                            <img
+                                id="recipeImage"
+                                class="recipe-image"
+                                src=""
+                                alt="Obrázok receptu"
+                            />
+                        </div>
+                        <div class="recipe-detail-content">
+                            <h2 id="recipeTitle"></h2>
+                            <p
+                                id="recipeDescription"
+                                class="recipe-detail-description"
+                            ></p>
+
+                            <div class="recipe-tags-block">
+                                <h3>Hlavné suroviny v recepte</h3>
+                                <div id="recipeTags" class="tags"></div>
+                            </div>
+
+                            <h3>Postup krok za krokom</h3>
+                            <ol id="recipeSteps" class="steps-list"></ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Populárne / Zdravé / Snacky -->
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Populárne recepty</h2>
+                    </div>
+                    <div id="popularList" class="card-grid"></div>
+                    <div class="ad-banner">
+                        🧾 Reklama: Tvoje miesto pre food značku. Vo Free verzii
+                        sa tu zobrazujú reklamy.
+                    </div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Zdravé recepty</h2>
+                    </div>
+                    <div id="healthyList" class="card-grid"></div>
+                </section>
+
+                <section class="section">
+                    <div class="section-header">
+                        <h2>Rýchle snacky</h2>
+                    </div>
+                    <div id="snackList" class="card-grid"></div>
+                    <div class="ad-banner">
+                        🧾 Reklama: Rýchle snacky sponzorované predstavou tvojej
+                        budúcej spolupráce.
+                    </div>
+                </section>
+
+                <!-- Obľúbené -->
+                <section class="section" id="favoritesSection">
+                    <div class="section-header">
+                        <h2>Moje obľúbené</h2>
+                        <p class="section-subtitle" id="favoritesSubtitle">
+                            Vo Free verzii si môžeš uložiť maximálne 5
+                            obľúbených receptov. V Premium neobmedzene.
+                        </p>
+                    </div>
+                    <div id="favoritesList" class="card-grid"></div>
+                </section>
+
+                <!-- FREE vs PREMIUM prehľad -->
+                <section class="section">
+                    <div class="section-header">
+                        <h2>CookLab Free vs Premium</h2>
+                        <p class="section-subtitle">
+                            Začni zadarmo a keď ti CookLab pomôže, odomkni viac
+                            funkcií v Premium verzii.
+                        </p>
+                    </div>
+
+                    <div class="pricing-grid">
+                        <article class="pricing-card pricing-free">
+                            <h3 class="pricing-title">CookLab Free</h3>
+                            <p class="pricing-price">0 € / navždy</p>
+                            <p class="pricing-note">Ideálne na vyskúšanie</p>
+                            <ul class="pricing-list">
+                                <li>🔍 Vyhľadávanie receptov podľa surovín</li>
+                                <li>⭐ Ukladanie do 5 obľúbených receptov</li>
+                                <li>🍝 Základné recepty a snacky</li>
+                                <li>📱 Používanie na mobile aj notebooku</li>
+                                <li>🧾 Reklamy na stránke</li>
+                            </ul>
+                        </article>
+
+                        <article class="pricing-card pricing-premium">
+                            <div class="pricing-badge">Najobľúbenejšie</div>
+                            <h3 class="pricing-title">CookLab Premium</h3>
+                            <p class="pricing-price">1,99 € / mesiac</p>
+                            <p class="pricing-note">
+                                Pre ľudí, ktorí varia často
+                            </p>
+                            <ul class="pricing-list">
+                                <li>
+                                    💾 Neobmedzené obľúbené a vlastné recepty
+                                </li>
+                                <li>🛒 Automatický nákupný zoznam</li>
+                                <li>📅 Týždenný plán jedál</li>
+                                <li>🔥 Pokročilé filtrovanie</li>
+                                <li>🚫 Žiadne reklamy</li>
+                                <li>🥗 Detailné nutričné hodnoty receptov</li>
+                            </ul>
+                            <button
+                                class="pricing-cta"
+                                type="button"
+                                id="openPremiumBtn"
+                            >
+                                Zobraziť Premium
+                            </button>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- PREMIUM SEKCIa -->
+                <section id="premiumSection" class="section premium hidden">
+                    <div class="premium-header">
+                        <div class="premium-header-left">
+                            <!-- LOGO V PREMIUM SEKCIÍ -->
+                            <img
+                                src="img/imgcooklab-logo.png"
+                                alt="CookLab logo"
+                                class="topbar-logo"
+                            />
+                            <div>
+                                <h2>CookLab Premium funkcie</h2>
+                                <p class="section-subtitle">
+                                    Spravuj vlastné recepty, nákupný zoznam a
+                                    týždenný plán jedál bez reklám.
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            id="backToFreeBtn"
+                            class="secondary-btn"
+                        >
+                            ← Späť na Free verziu
+                        </button>
+                    </div>
+
+                    <div class="premium-grid">
+                        <!-- Vlastné recepty -->
+                        <article class="premium-block">
+                            <h3>💾 Vlastné recepty & neobmedzené obľúbené</h3>
+                            <p class="text-small">
+                                V Premium si môžeš vytvárať vlastné recepty a
+                                ukladať si neobmedzený počet obľúbených.
+                            </p>
+                            <form id="customRecipeForm" class="form">
+                                <div class="form-row">
+                                    <label
+                                        >Názov receptu
+                                        <input
+                                            type="text"
+                                            id="customTitle"
+                                            required
+                                        />
+                                    </label>
+                                </div>
+                                <div class="form-row">
+                                    <label
+                                        >Suroviny (oddelené čiarkou)
+                                        <input
+                                            type="text"
+                                            id="customIngredients"
+                                            required
+                                        />
+                                    </label>
+                                </div>
+                                <div class="form-row">
+                                    <label
+                                        >Stručný popis
+                                        <textarea
+                                            id="customDescription"
+                                            rows="2"
+                                        ></textarea>
+                                    </label>
+                                </div>
+                                <div class="form-row">
+                                    <label
+                                        >Postup (jednotlivé kroky oddel
+                                        bodkočiarkou <code>;</code>)
+                                        <textarea
+                                            id="customSteps"
+                                            rows="2"
+                                        ></textarea>
+                                    </label>
+                                </div>
+                                <div class="form-row form-inline">
+                                    <label
+                                        >Typ jedla
+                                        <select id="customType">
+                                            <option value="raňajky">
+                                                Raňajky
+                                            </option>
+                                            <option value="obed">Obed</option>
+                                            <option value="večera">
+                                                Večera
+                                            </option>
+                                            <option value="snack">Snack</option>
+                                        </select>
+                                    </label>
+                                    <label
+                                        >Obrázok (názov súboru)
+                                        <input
+                                            type="text"
+                                            id="customImage"
+                                            placeholder="napr. palacinky.jpg"
+                                        />
+                                    </label>
+                                </div>
+                                <button type="submit" class="primary-btn small">
+                                    Pridať vlastný recept
+                                </button>
+                                <p
+                                    class="form-hint"
+                                    id="customRecipeMessage"
+                                ></p>
+                            </form>
+                        </article>
+
+                        <!-- Nákupný zoznam -->
+                        <article class="premium-block">
+                            <h3>🛒 Automatický nákupný zoznam</h3>
+                            <p class="text-small">
+                                Vyber si recepty a CookLab ti vytvorí zoznam
+                                surovín, ktoré potrebuješ.
+                            </p>
+                            <div
+                                id="shoppingRecipes"
+                                class="shopping-recipes"
+                            ></div>
+                            <button
+                                id="generateShoppingListBtn"
+                                class="secondary-btn small"
+                            >
+                                Vytvoriť nákupný zoznam
+                            </button>
+                            <ul id="shoppingList" class="shopping-list"></ul>
+                        </article>
+
+                        <!-- Týždenný plán -->
+                        <article class="premium-block">
+                            <h3>📅 Týždenný plán jedál</h3>
+                            <p class="text-small">
+                                Jedným klikom si vygeneruj plán raňajok, obedov
+                                a večerí na 7 dní.
+                            </p>
+                            <button
+                                id="generatePlanBtn"
+                                class="secondary-btn small"
+                            >
+                                Vygenerovať plán
+                            </button>
+                            <div id="mealPlan" class="meal-plan-table"></div>
+                        </article>
+
+                        <!-- Pokročilé filtrovanie -->
+                        <article class="premium-block">
+                            <h3>🔥 Pokročilé filtrovanie</h3>
+                            <div class="filter-row">
+                                <label
+                                    >Typ jedla
+                                    <select id="filterType">
+                                        <option value="">Všetko</option>
+                                        <option value="raňajky">Raňajky</option>
+                                        <option value="obed">Obed</option>
+                                        <option value="večera">Večera</option>
+                                        <option value="snack">Snack</option>
+                                    </select>
+                                </label>
+                                <label
+                                    >Zameranie
+                                    <select id="filterTag">
+                                        <option value="">Ľubovoľné</option>
+                                        <option value="zdravé">Zdravé</option>
+                                        <option value="rýchle">Rýchle</option>
+                                        <option value="populárne">
+                                            Populárne
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div id="filterResults" class="card-grid"></div>
+                        </article>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="footer">
+                CookLab – generátor receptov pre študentov, rodiny a
+                zaneprázdnených ľudí.
+            </footer>
+        </div>
+
+        <!-- "Platba" za Premium (demo) -->
+        <div id="paymentModal" class="modal hidden">
+            <div class="modal-backdrop"></div>
+            <div class="modal-content">
+                <button type="button" class="modal-close" id="paymentClose">
+                    ×
+                </button>
+                <h2>Aktivovať CookLab Premium</h2>
+                <p class="modal-text">
+                    Vyplň údaje (demo platba, bez skutočného stiahnutia peňazí)
+                    a odomkni Premium funkcie.
+                </p>
+                <form id="paymentForm" class="form">
+                    <div class="form-row">
+                        <label
+                            >Meno na karte
+                            <input type="text" id="cardName" required />
+                        </label>
+                    </div>
+                    <div class="form-row">
+                        <label
+                            >Číslo karty
+                            <input
+                                type="text"
+                                id="cardNumber"
+                                placeholder="1234 5678 9012 3456"
+                                required
+                            />
+                        </label>
+                    </div>
+                    <div class="form-row form-inline">
+                        <label
+                            >MM/RR
+                            <input
+                                type="text"
+                                id="cardExpiry"
+                                placeholder="12/28"
+                                required
+                            />
+                        </label>
+                        <label
+                            >CVC
+                            <input
+                                type="password"
+                                id="cardCvc"
+                                placeholder="123"
+                                required
+                            />
+                        </label>
+                    </div>
+                    <button type="submit" class="primary-btn small">
+                        Zaplatíť 1,99 €
+                    </button>
+                    <p class="form-hint">
+                        V reálnej aplikácii by tu bola napojená platobná brána
+                        (Stripe, GoPay a pod.).
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
